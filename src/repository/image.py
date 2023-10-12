@@ -6,7 +6,9 @@ import shutil
 from sqlalchemy import and_
 
 
-def create_image(file, user_id: int, description: str, tags: List[str], db: Session) -> Photo:
+def create_image(
+    file, user_id: int, description: str, tags: List[str], db: Session
+) -> Photo:
     """
     Создает изображение, сохраняет его на сервере и связывает его с тегами.
 
@@ -52,7 +54,6 @@ def create_image(file, user_id: int, description: str, tags: List[str], db: Sess
     return image
 
 
-
 async def get_image(image_id: int, user_id: int, db: Session):
     """
     Получает изображение по его идентификатору и идентификатору пользователя.
@@ -93,7 +94,7 @@ async def change_description(
         .filter(and_(Photo.id == image_id, Photo.user_id == user_id))
         .first()
     )
-    
+
     # Если изображение найдено, изменение описания и сохранение изменений в базе данных
     if image:
         image.description = description
@@ -102,8 +103,7 @@ async def change_description(
     return image
 
 
-
-async def delte_image_by_id(image_id: int, user_id: int, db: Session)->bool:
+async def delte_image_by_id(image_id: int, user_id: int, db: Session) -> bool:
     """
     Удаляет изображение по его идентификатору и идентификатору пользователя.
 

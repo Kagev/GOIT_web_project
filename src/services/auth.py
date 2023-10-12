@@ -71,7 +71,7 @@ class Auth:
                 status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
             )
         return current_user
-    
+
     async def get_email_from_token() -> str:
         pass
 

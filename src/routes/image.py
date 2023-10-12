@@ -50,7 +50,7 @@ async def get_image(
     image_id: int,
     current_user: User = Depends(auth_service.get_current_user_as_admin),
     db: Session = Depends(get_db),
-)->ImageModel:
+) -> ImageModel:
     """
     Эндпоинт для получения изображения по его идентификатору.
 
@@ -85,7 +85,7 @@ async def update_image(
     description: str = Form(),
     current_user: User = Depends(auth_service.get_current_user_as_admin),
     db: Session = Depends(get_db),
-)->dict:
+) -> dict:
     """
     Эндпоинт для обновления описания изображения.
 
@@ -117,7 +117,7 @@ async def delete_image(
     image_id: int,
     db: Session(get_db),
     current_user: User = Depends(auth_service.get_current_user_as_admin),
-)->dict:
+) -> dict:
     """
     Эндпоинт для удаления изображения по его идентификатору.
 
