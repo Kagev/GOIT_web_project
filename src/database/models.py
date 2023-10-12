@@ -47,7 +47,7 @@ class Tag(Base):
     images = relationship("Photo", secondary="photo_tags", back_populates="tags")
 
 
-class ImageTagAssociation(Base):
+class PhotoTagAssociation(Base):
     __tablename__ = "photo_tags"
 
     image_id = Column(Integer, ForeignKey("photos.id"), primary_key=True)
