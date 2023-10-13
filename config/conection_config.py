@@ -8,12 +8,19 @@ import os
 # load .env
 load_dotenv()
 
+# SECRET
+JWT_TOKEN = os.environ.get('JWT_TOKEN')
+REF_JWT_Token = os.environ.get('REF_JWT_Token')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+ALGORITHM = os.environ.get('ALGORITHM')
+
 # cloud db (ElephanSQL)
 POSTGRES_DB_NAME = os.environ.get("postgres_db_name")
 USERNAME_DB = os.environ.get("username_elephant")
 PASSWORD_DB = os.environ.get("password_elephant")
 URL_DB = os.environ.get("url_elephant")
 API_DB = os.environ.get("api_elephant")
+DB_TYPE = os.environ.get("db_type")
 
 # Redis cloud
 REDIS_DB_NAME = os.environ.get("redis_db_name")

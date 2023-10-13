@@ -4,6 +4,7 @@ from ipaddress import ip_address
 
 from pydantic import BaseSettings, EmailStr
 from fastapi.templating import Jinja2Templates
+from conection_config import ALGORITHM, URL_DB, SECRET_KEY, CLOUDINARY_NAME, CLOUDINARY_API, CLOUDINARY_API_SECRET
 
 BASE_DIR = Path(__file__).parent
 
@@ -15,10 +16,10 @@ class Template:
 
 
 class Settings(BaseSettings):
-    db_url: str = "{DB_TYPE}+{DB_CONNECTOR}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+    db_url: str = URL_DB
 
-    secret_key_jwt: str = "secret_key_jwt"
-    algorithm: str = "HS256"
+    secret_key_jwt: str = SECRET_KEY
+    algorithm: str = ALGORITHM
 
     mail_username: EmailStr
     mail_password: str
@@ -31,13 +32,14 @@ class Settings(BaseSettings):
     redis_port: int
     redis_password: str
 
-    cloudinary_name: str
-    cloudinary_api_key: int
-    cloudinary_api_secret: str
-    cloudinary_folder: str = "folder/"
+    cloudinary_name: str = CLOUDINARY_NAME
+    cloudinary_api_key: int = CLOUDINARY_API
+    cloudinary_api_secret: str = CLOUDINARY_API_SECRET
+    cloudinary_folder: str = "PyCrafters/"
 
     class Config:
         env_file = BASE_DIR / '.env'
+
 
 
 settings = Settings()
