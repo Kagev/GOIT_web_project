@@ -11,7 +11,7 @@ class TestImage(unittest.IsolatedAsyncioTestCase):
         self.session = MagicMock(spec=Session)
         self.user = User(id=1)
 
-    def test_create_image(self):
+    async def test_create_image(self):
         #создание тестовх данных
         user_id = 1
         description = 'Test image'
@@ -19,7 +19,7 @@ class TestImage(unittest.IsolatedAsyncioTestCase):
         file = BytesIO(b'Test image')
 
         # Вызов тестируемой функции
-        image = create_image(file, user_id, description, tags, self.session)
+        image =await create_image(file, user_id, description, tags, db=self.session)
 
         #Проверка результатов
         self.assertEqual(image.user_id, user_id)
@@ -28,7 +28,7 @@ class TestImage(unittest.IsolatedAsyncioTestCase):
         for tag in image.tags:
             self.assertIn(tag.name, tags)
 
-    def test_get_image(self):
+    async def test_get_image(self):
         #создание тестовх данных
         user_id = 1
         description = 'Test image'
@@ -36,16 +36,16 @@ class TestImage(unittest.IsolatedAsyncioTestCase):
         file = BytesIO(b'Test image')
 
         # Создание изображения в базе данных
-        image = create_image(file, user_id, description, tags, self.session)
+        image =await create_image(file, user_id, description, tags, db=self.session)
         image_id = image.id
 
         # Вызов тестируемой функции
-        result = get_image(image_id, user_id, self.session)
+        result =await get_image(image_id, user_id, db=self.session)
 
         # Проверка результатов
         self.assertEqual(result, image)
 
-    def test_change_description(self):
+    async def test_change_description(self):
         # Создание тестовых данных
         user_id = 1
         description = "Test image"
@@ -53,19 +53,19 @@ class TestImage(unittest.IsolatedAsyncioTestCase):
         file = BytesIO(b'Test image content')
 
         # Создание изображения в базе данных
-        image = create_image(file, user_id, description, tags, self.session)
+        image =await create_image(file, user_id, description, tags, db=self.session)
         image_id = image.id
 
         # Новое описание
         new_description = "New description"
 
         # Вызов тестируемой функции
-        result = change_description(image_id, user_id, new_description, self.session)
+        result =await change_description(image_id, user_id, new_description, db=self.session)
 
         # Проверка результатов
         self.assertEqual(result.description, new_description)
 
-    def test_delete_image(self):
+    async def test_delete_image(self):
         # Создание тестовых данных
         user_id = 1
         description = "Test image"
@@ -73,11 +73,11 @@ class TestImage(unittest.IsolatedAsyncioTestCase):
         file = BytesIO(b'Test image content')
 
         # Создание изображения в базе данных
-        image = create_image(file, user_id, description, tags, self.session)
+        image =await create_image(file, user_id, description, tags, db=self.session)
         image_id = image.id
 
         # Вызов тестируемой функции
-        result = delete_image(image_id, user_id, self.session)
+        result =await delete_image(image_id, user_id, self.session)
 
         # Проверка результатов
         self.assertEqual(result, True)
