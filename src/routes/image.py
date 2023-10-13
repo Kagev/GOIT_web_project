@@ -17,7 +17,7 @@ async def create_image(
     description: str = Form(),
     tags: List[str] = Form([]),
     db: Session = Depends(get_db),
-    current_user: User = Depends(auth_service.get_current_user_as_admin),
+    current_user: User = Depends(auth_service.get_current_user),
 ) -> ImageModel:
     """
     Эндпоинт для загрузки изображения пользователем.
@@ -48,7 +48,7 @@ async def create_image(
 @router.get("/getimage/{image_id}", response_model=ImageModel)
 async def get_image(
     image_id: int,
-    current_user: User = Depends(auth_service.get_current_user_as_admin),
+    current_user: User = Depends(auth_service.get_current_user),
     db: Session = Depends(get_db),
 ) -> ImageModel:
     """
@@ -63,12 +63,18 @@ async def get_image(
     - ImageModel: модель изображения с полями path, user_id, description и tags.
 
     Raises:
+    - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
     image = await repository_image.get_image(image_id, db, user_id=current_user.id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
+        )
+    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not allowed to perform this action",
         )
 
     return {
@@ -83,7 +89,7 @@ async def get_image(
 async def update_image(
     image_id: int,
     description: str = Form(),
-    current_user: User = Depends(auth_service.get_current_user_as_admin),
+    current_user: User = Depends(auth_service.get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
     """
@@ -99,12 +105,18 @@ async def update_image(
     - dict: словарь с сообщением об успешном обновлении.
 
     Raises:
+    - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
     image = await repository_image.get_image(image_id, db, user_id=current_user.id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
+        )
+    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not allowed to perform this action",
         )
 
     description = await repository_image.change_description(image_id, description, db)
@@ -116,7 +128,7 @@ async def update_image(
 async def delete_image(
     image_id: int,
     db: Session(get_db),
-    current_user: User = Depends(auth_service.get_current_user_as_admin),
+    current_user: User = Depends(auth_service.get_current_user),
 ) -> dict:
     """
     Эндпоинт для удаления изображения по его идентификатору.
@@ -130,12 +142,18 @@ async def delete_image(
     - dict: словарь с сообщением об успешном удалении.
 
     Raises:
+    - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
     image = await repository_image.get_image(image_id, db, user_id=current_user.id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
+        )
+    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not allowed to perform this action",
         )
 
     image = await repository_image.delte_image_by_id(image_id, db)
