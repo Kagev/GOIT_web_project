@@ -49,11 +49,11 @@ def user() -> dict:
 
 @pytest.fixture(scope="function")
 def mock_rate_limit(mocker):
-    mock_rate_limit = mocker.patch.object(RateLimiter, '__call__', autospec=True)
+    mock_rate_limit = mocker.patch.object(RateLimiter, "__call__", autospec=True)
     mock_rate_limit.return_value = False
 
 
 @pytest.fixture(autouse=True)
 def mock_auth_redis(mocker):
-    mock_redis = mocker.patch.object(auth_service, 'redis', autospec=True)
+    mock_redis = mocker.patch.object(auth_service, "redis", autospec=True)
     mock_redis.get.return_value = None
