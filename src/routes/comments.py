@@ -22,7 +22,7 @@ async def create_comment(photo_id: int, body: CommentModel, current_user: User =
 
 @router.get('/{photo_id}', response_model=List[CommentResponse])
 async def get_comments(photo_id: int, current_user: User = Depends(auth_service.get_current_user), db: Session = Depends(get_db)):
-    comment = await repository_comments.get_comments(photo_id, current_user, db)
+    comment = await repository_comments.get_comments(photo_id, db)
     if comment is None:
         HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Photo not found')
     return comment
