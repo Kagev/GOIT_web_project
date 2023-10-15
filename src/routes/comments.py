@@ -16,7 +16,7 @@ router = APIRouter(prefix='/comments', tags=['comments'])
 async def create_comment(photo_id: int, body: CommentModel, current_user: User = Depends(auth_service.get_current_user), db: Session = Depends(get_db)):
     comment = await repository_comments.create_comment(photo_id, body, current_user, db)
     if comment is None:
-        HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Photo not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Photo not found')
     return comment
 
 
@@ -24,7 +24,7 @@ async def create_comment(photo_id: int, body: CommentModel, current_user: User =
 async def get_comments(photo_id: int, current_user: User = Depends(auth_service.get_current_user), db: Session = Depends(get_db)):
     comment = await repository_comments.get_comments(photo_id, db)
     if comment is None:
-        HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Photo not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Photo not found')
     return comment
 
 
@@ -32,7 +32,9 @@ async def get_comments(photo_id: int, current_user: User = Depends(auth_service.
 async def update_comment(comment_id: int, body: CommentModel, current_user: User = Depends(auth_service.get_current_user), db: Session = Depends(get_db)):
     comment = await repository_comments.update_comment(comment_id, body, current_user, db)
     if comment is None:
-        HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comment not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comment not found')
+    elif not ((current_user.role in ('admin', 'moderator')) or comment.user_id == current_user.id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='You are not allowed to perform this action')
     return comment
 
 
@@ -40,5 +42,7 @@ async def update_comment(comment_id: int, body: CommentModel, current_user: User
 async def delete_comment(comment_id: int, current_user: User = Depends(auth_service.get_current_user), db: Session = Depends(get_db)):
     comment = await repository_comments.delete_comment(comment_id, current_user, db)
     if comment is None:
-        HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comment not found')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Comment not found')
+    elif current_user.role not in ('admin', 'moderator'):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='You are not allowed to perform this action')
     return comment
