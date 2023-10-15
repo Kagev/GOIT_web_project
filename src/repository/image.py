@@ -6,7 +6,7 @@ import shutil
 from sqlalchemy import and_
 
 
-def create_image(
+async def create_image(
     file, user_id: int, description: str, tags: List[str], db: Session
 ) -> Photo:
     """

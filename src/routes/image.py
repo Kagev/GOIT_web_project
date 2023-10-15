@@ -71,7 +71,7 @@ async def get_image(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+    elif not (current_user.role in ("admin", 'moderator') or current_user.id == image.user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -113,7 +113,7 @@ async def update_image(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+    elif not (current_user.role in ("admin", 'moderator') or current_user.id == image.user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -150,7 +150,7 @@ async def delete_image(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+    elif not (current_user.role in ("admin", 'moderator') or current_user.id == image.user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
