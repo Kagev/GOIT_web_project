@@ -4,19 +4,18 @@
 the final project of the educational unit "Python Web"
 
 
-## by GoIT project-team "PyCrafters"
+## by GoIT project-team-4 "PyCrafters"
 
-Team Leader: 
+Team Leader: Heorhii K. (Kagev)
 
-Scrum-master: 
+Scrum-master: Dmitrii V.
 
 Project mentor and Owner: Danilo S.
 
 **Developer:**
 
     • Mihailo 
-    • Dmitrii 
-    • Roman
+    • Dmitrii
     • Yaroslav M.
     • Yaroslav
     • Heorhii
