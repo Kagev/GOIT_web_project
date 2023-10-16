@@ -11,6 +11,7 @@ class UserRole(Base):
     __tablename__ = "user_roles"
     id = Column(Integer, primary_key=True, index=True)
     role_name = Column(String(50), unique=True, nullable=False)
+    users = relationship("User", back_populates="role")
 
 
 class User(Base):
