@@ -1,6 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from pydantic import BaseModel
+
+
+from config.conection_config import SECRET_KEY, ALGORITHM
 
 
 class TokenData(BaseModel):
@@ -12,31 +16,31 @@ class TokenData(BaseModel):
 class Auth:
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-    def verify_password() -> bool:
+    def verify_password(self) -> bool:
         pass
 
-    def get_password_hash() -> str:
+    def get_password_hash(self) -> str:
         pass
 
-    def __decode_jwt() -> dict:
+    def __decode_jwt(self) -> dict:
         pass
 
-    def __encode_jwt() -> str:
+    def __encode_jwt(self) -> str:
         pass
 
     # define a function to generate a new access token
-    async def create_access_token() -> str:
+    async def create_access_token(self) -> str:
         pass
 
     # define a function to generate a new refresh token
-    async def create_refresh_token() -> str:
+    async def create_refresh_token(self) -> str:
         pass
 
     # define a function to generate a new confirmed email token
-    async def create_email_token() -> str:
+    async def create_email_token(self) -> str:
         pass
 
-    async def decode_refresh_token() -> str:
+    async def decode_refresh_token(self) -> str:
         pass
 
     def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -72,7 +76,7 @@ class Auth:
             )
         return current_user
 
-    async def get_email_from_token() -> str:
+    async def get_email_from_token(self) -> str:
         pass
 
 

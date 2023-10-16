@@ -4,12 +4,14 @@ from fastapi_limiter.depends import RateLimiter
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
+from config.conection_config import URL_DB
+from config.conection_db import DATABASE_URL
 from main import app
 from src.database.models import Base
 from src.database.db import get_db
 from src.services.auth import auth_service
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+SQLALCHEMY_DATABASE_URL = DATABASE_URL
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}

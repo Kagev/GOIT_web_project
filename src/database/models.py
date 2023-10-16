@@ -1,7 +1,6 @@
-from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, func
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from src.database.db import engine
+from sqlalchemy import Boolean, Column,DateTime, Integer,ForeignKey, func, String, Date
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from config.conection_db import engine
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -20,10 +19,11 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(250), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
-    created_at: Column(DateTime, default=func.now())
-    avatar: Column(String(255))
-    refresh_token: Column(String(255))
-    confirmed: Column(default=False)
+    birth_date = Column(Date)
+    created_at = Column(DateTime, default=func.now())
+    avatar = Column(String)
+    refresh_token = Column(String(255))
+    confirmed = Column(Boolean, default=False)
     role_id = Column(Integer, ForeignKey("user_roles.id"), nullable=False)
     role = relationship("UserRole", back_populates="users")
 

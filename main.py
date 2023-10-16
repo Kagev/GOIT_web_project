@@ -1,11 +1,8 @@
-import FastAPI
+from fastapi import FastAPI
 import uvicorn
 
+
 app = FastAPI()
-
-
-app.add_middleware()
-
 
 
 
