@@ -36,7 +36,7 @@ class Photo(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     path = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    tags = relationship("Tag", secondary="image_tags", back_populates="images")
+    tags = relationship("Tag", secondary="photo_tags", back_populates="photos")
     created_at = Column(DateTime, default=func.now())
 
 
