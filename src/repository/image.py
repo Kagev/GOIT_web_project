@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import NoResultFound
-from src.database.models import Photo, Tag
+from src.database.models import Image, Tag
 from typing import List
 import shutil
 from sqlalchemy import and_
@@ -8,7 +8,7 @@ from sqlalchemy import and_
 
 async def create_image(
     file, user_id: int, description: str, tags: List[str], db: Session
-) -> Photo:
+) -> Image:
     """
     Создает изображение, сохраняет его на сервере и связывает его с тегами.
 
@@ -20,10 +20,10 @@ async def create_image(
     - db: объект сессии базы данных SQLAlchemy.
 
     Returns:
-    - Photo: объект Photo, представляющий созданное изображение.
+    - Images: объект Images, представляющий созданное изображение.
     """
-    # Создание объекта Photo
-    image = Photo(user_id, description=description)
+    # Создание объекта Image
+    image = Image(user_id, description=description)
     db.add(image)
     db.commit()
     db.refresh(image)
@@ -46,11 +46,11 @@ async def create_image(
     with open(f"images/{image.id}_{file.filename}", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Обновление пути к файлу изображения в объекте Photo
+    # Обновление пути к файлу изображения в объекте Image
     image.path = f"images/{image.id}_{file.filename}"
     db.commit()
 
-    # Возвращение объекта Photo
+    # Возвращение объекта Image
     return image
 
 
@@ -64,11 +64,11 @@ async def get_image(image_id: int, user_id: int, db: Session):
     - db: объект сессии базы данных SQLAlchemy.
 
     Returns:
-    - Photo: объект Photo, представляющий запрашиваемое изображение, или None, если изображение не найдено.
+    - Image: объект Image, представляющий запрашиваемое изображение, или None, если изображение не найдено.
     """
     return (
-        db.query(Photo)
-        .filter(and_(Photo.id == image_id, Photo.user_id == user_id))
+        db.query(Image)
+        .filter(and_(Image.id == image_id, Image.user_id == user_id))
         .first()
     )
 
@@ -86,12 +86,12 @@ async def change_description(
     - db: объект сессии базы данных SQLAlchemy.
 
     Returns:
-    - Optional[Photo]: объект Photo, представляющий измененное изображение, или None, если изображение не найдено.
+    - Optional[Image]: объект Image, представляющий измененное изображение, или None, если изображение не найдено.
     """
     # Поиск изображения по идентификаторам
     image = (
-        db.query(Photo)
-        .filter(and_(Photo.id == image_id, Photo.user_id == user_id))
+        db.query(Image)
+        .filter(and_(Image.id == image_id, Image.user_id == user_id))
         .first()
     )
 
@@ -117,8 +117,8 @@ async def delte_image_by_id(image_id: int, user_id: int, db: Session) -> bool:
     """
     # Поиск и удаление изображения из базы данных
     image = (
-        db.query(Photo)
-        .filter(and_(Photo.id == image_id, Photo.user_id == user_id))
+        db.query(Image)
+        .filter(and_(Image.id == image_id, Image.user_id == user_id))
         .delete()
     )
 

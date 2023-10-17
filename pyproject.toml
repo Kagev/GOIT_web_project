@@ -1,22 +1,26 @@
 [tool.poetry]
-name = "python-web-project"
+name = "goit_web_project"
 version = "0.1.0"
 description = ""
-authors = ["Kagev <kaplitskiygv@gmail.com>"]
-readme = "README.md"
+authors = ["Yaroslav Melnychuk <yarmel.dev@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
-python-dotenv = "^1.0.0"
-pydantic = "^2.4.2"
-sqlalchemy = "^2.0.21"
-fastapi = "^0.103.2"
+python = "^3.10"
 uvicorn = {extras = ["standard"], version = "^0.23.2"}
-faker = "^19.9.1"
-pytest = "^7.4.2"
-fastapi-limiter = "^0.1.5"
+fastapi = "^0.103.2"
+psycopg2-binary = "^2.9.9"
+SQLAlchemy = "^2.0.22"
+pydantic-settings = "^2.0.3"
+pydantic = {extras = ["email"], version = "^2.4.2"}
+jose = "^1.0.0"
+passlib = "^1.7.4"
+python-jose = "^3.3.0"
+python-multipart = "^0.0.6"
+alembic = "^1.12.0"
+cloudinary = "^1.36.0"
 
+[tool.poetry.dev-dependencies]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
