@@ -11,9 +11,9 @@ db_name = settings.postgres_name
 domain = settings.postgres_domain
 port = settings.postgres_port
 
-database_url = f"postgresql+psycopg2://{user}:{password}@{domain}:{port}/{db_name}"
+DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{domain}:{port}/{db_name}"
 
-engine = create_engine(database_url)
+engine = create_engine(DATABASE_URL)
 
 
 def get_db():
