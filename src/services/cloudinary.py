@@ -3,17 +3,10 @@ Processing our images using the Cloudinary service
 """
 
 from typing import BinaryIO
-
 import cloudinary
-
-# Import the cloudinary.api for managing assets
 from cloudinary.api import resource
-
-# Import the cloudinary.uploader for uploading assets
 from cloudinary.uploader import upload
-
-# import config setting
-from config.config import settings
+from config import settings
 
 cloudinary.config(
     cloud_name=settings.cloudinary_name,
@@ -66,7 +59,7 @@ def transform_img(public_id, width, height, crop):
     transformation.height(height)
     transformation.crop(crop)
 
-    # Get URL transform image изображения
+    # Get URL transform image
     transformed_url = image.build_url(transformation=transformation)
 
     return transformed_url

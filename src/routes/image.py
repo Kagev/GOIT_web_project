@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, status, UploadFile, File, Form, HTTPException
-from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR, HTTP_404_NOT_FOUND
 from sqlalchemy.orm import Session
 from typing import List
-from src.database.models import Photo, Tag, User
-from src.schemas import ImageModel
-from src.database.db import get_db
+from src.database.models import User
+from src.database.connection import get_db
 from src.repository import image as repository_image
 from src.services.auth import auth_service
+from src.schemas.image import ImageModel
+
 
 router = APIRouter(prefix="/images", tags=["images"])
 
@@ -71,7 +71,9 @@ async def get_image(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role in ("admin", 'moderator') or current_user.id == image.user_id):
+    elif not (
+        current_user.role in ("admin", "moderator") or current_user.id == image.user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -113,7 +115,9 @@ async def update_image(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role in ("admin", 'moderator') or current_user.id == image.user_id):
+    elif not (
+        current_user.role in ("admin", "moderator") or current_user.id == image.user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -127,7 +131,7 @@ async def update_image(
 @router.delete("/deleteimage/{image_id}", response_model=ImageModel)
 async def delete_image(
     image_id: int,
-    db: Session(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(auth_service.get_current_user),
 ) -> dict:
     """
@@ -145,12 +149,14 @@ async def delete_image(
     - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
-    image = await repository_image.get_image(image_id, db, user_id=current_user.id)
+    image = await repository_image.get_image(image_id, current_user.id, db)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role in ("admin", 'moderator') or current_user.id == image.user_id):
+    elif not (
+        current_user.role in ("admin", "moderator") or current_user.id == image.user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
