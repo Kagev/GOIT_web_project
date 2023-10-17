@@ -27,7 +27,7 @@ async def create_image(
     - description: строка, описывающая изображение.
     - tags: список строк, представляющих теги, связанные с изображением.
     - db: объект сессии базы данных SQLAlchemy.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
+    - token_data: объект данных токена, представляющий текущего аутентифицированного пользователя.
 
     Returns:
     - ImageModel: модель изображения с полями id, user_id, description и tags.
@@ -35,7 +35,7 @@ async def create_image(
     """
     # Попытка создать изображение
     image = await repository_image.create_image(
-        file, description, tags, db, user_id=token_data.id
+        file, description, tags, db, user_id=token_data.user_id
     )
     return {
         "id": image.id,
@@ -56,7 +56,7 @@ async def get_image(
 
     Parameters:
     - image_id: идентификатор изображения.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
+    - token_data: объект данных токена, представляющий текущего аутентифицированного пользователя.
     - db: объект сессии базы данных SQLAlchemy.
 
     Returns:
@@ -66,12 +66,12 @@ async def get_image(
     - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
-    image = await repository_image.get_image(image_id, db, user_id=token_data.id)
+    image = await repository_image.get_image(image_id, db, user_id=token_data.user_id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (token_data.role in ("admin", 'moderator') or token_data.id == image.user_id):
+    elif not (token_data.role in ("admin", 'moderator') or token_data.user_id == image.user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -98,7 +98,7 @@ async def update_image(
     Parameters:
     - image_id: идентификатор изображения.
     - description: новое описание изображения.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
+    - token_data: объект данных токена, представляющий текущего аутентифицированного пользователя.
     - db: объект сессии базы данных SQLAlchemy.
 
     Returns:
@@ -108,12 +108,12 @@ async def update_image(
     - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
-    image = await repository_image.get_image(image_id, db, user_id=token_data.id)
+    image = await repository_image.get_image(image_id, db, user_id=token_data.user_id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (token_data.role in ("admin", 'moderator') or token_data.id == image.user_id):
+    elif not (token_data.role in ("admin", 'moderator') or token_data.user_id == image.user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -136,7 +136,7 @@ async def delete_image(
     Parameters:
     - image_id: идентификатор изображения.
     - db: объект сессии базы данных SQLAlchemy.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
+    - token_data: объект данных токена, представляющий текущего аутентифицированного пользователя.
 
     Returns:
     - dict: словарь с сообщением об успешном удалении.
@@ -145,12 +145,12 @@ async def delete_image(
     - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
     - HTTPException: 404 Not Found, если изображение не найдено.
     """
-    image = await repository_image.get_image(image_id, db, user_id=token_data.id)
+    image = await repository_image.get_image(image_id, db, user_id=token_data.user_id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (token_data.role in ("admin", 'moderator') or token_data.id == image.user_id):
+    elif not (token_data.role in ("admin", 'moderator') or token_data.user_id == image.user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
