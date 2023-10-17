@@ -12,8 +12,8 @@ class Settings(BaseSettings):
 	# Token block
 	secret_key: str = os.environ.get('SECRET_KEY')
 	algorithm: str = os.environ.get('ALGORITHM')
-	expires_delta_access_token: int = os.environ.get('JWT_TOKEN')
-	expires_delta_refresh_token: int = os.environ.get('REF_JWT_TOKEN')
+	expires_delta_access_token: str = os.environ.get('JWT_TOKEN')
+	expires_delta_refresh_token: str = os.environ.get('REF_JWT_TOKEN')
 
 	# Users block
 	allowed_roles: list = ["user", "moderator", "admin"]
