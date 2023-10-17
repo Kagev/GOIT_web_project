@@ -5,9 +5,9 @@ from pydantic import EmailStr
 
 from src.database.connection import get_db
 from src.repository import users as repository_users
-from src.repository.token_blacklist import add_token_to_blacklist, is_token_blacklisted, clear_expires_records
-from src.services.auth import auth_service
-from src.shemas.users import (
+from src.repository.token_blacklist import add_token_to_blacklist, clear_expires_records
+from src.services.auth import auth_service, TokenData
+from src.schemas.users import (
     UserModel,
     UserResponse,
     TokenModel,
@@ -74,10 +74,10 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
 
 
 @router.post("/logout")
-async def logout(token: str = Depends(auth_service.get_current_user_token), db: Session = Depends(get_db)):
+async def logout(access_token: str = Depends(auth_service.oauth2_scheme), db: Session = Depends(get_db)):
     """The logout function is used to authenticate a user."""
-    email = await auth_service.get_email_from_token(token)
-    if add_token_to_blacklist(email, token, db):
+    token_data = await auth_service.get_token_data(access_token, db)
+    if await add_token_to_blacklist(token_data.email, access_token, db):
         return {'result': "Logout successful"}
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -87,11 +87,12 @@ async def logout(token: str = Depends(auth_service.get_current_user_token), db: 
 
 @router.patch("/clear_expires_tokens")
 async def clear_expires_tokens(
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        token_data: TokenData = Depends(auth_service.get_token_data)
 ):
     """The function delete old blacklisted records in the database."""
 
-    clear_expires_records(db)
+    await clear_expires_records(db)
     return {"result": "Old blacklisted records was deleted"}
 
 
@@ -100,38 +101,34 @@ async def assign_role(
     user_email: EmailStr,
     new_role: str = "moderator",
     db: Session = Depends(get_db),
-    token: str = Depends(auth_service.get_current_user_token),
+    token_data: TokenData = Depends(auth_service.get_token_data),
 ):
     """The function assign role for a user in the database.
     Allowed roles: 'user', 'moderator', 'admin'. Only for admin users."""
-    if not is_token_blacklisted(token, db):
-        role = await auth_service.get_user_role_from_token(token)
-        if role == "admin":
-            exist_user = await repository_users.get_user_by_email(user_email, db)
-            if not exist_user:
-                raise HTTPException(
-                    status_code=status.HTTP_204_NO_CONTENT,
-                    detail=f"Account with email {user_email} not exists",
-                )
-            if exist_user.role == new_role:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail=f"User already with '{new_role}' role!",
-                )
-            try:
-                return await repository_users.assign_role(
-                    user_email, role_in_allowed_roles(new_role), db
-                )
-            except AssertionError:
-                raise HTTPException(
-                    status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                    detail=f"Role '{new_role}' is not valid",
-                )
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Only Admins can do this"
-        )
+
+    if token_data.role == "admin":
+        exist_user = await repository_users.get_user_by_email(user_email, db)
+        if not exist_user:
+            raise HTTPException(
+                status_code=status.HTTP_204_NO_CONTENT,
+                detail=f"Account with email {user_email} not exists",
+            )
+        if exist_user.role == new_role:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"User already with '{new_role}' role!",
+            )
+        try:
+            return await repository_users.assign_role(
+                user_email, role_in_allowed_roles(new_role), db
+            )
+        except AssertionError:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE,
+                detail=f"Role '{new_role}' is not valid",
+            )
     raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, detail="This token is no valid. Try to login."
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="Only Admins can do this"
     )
 
 
@@ -142,8 +139,8 @@ async def refresh_token(
 ):
     """The refresh_token function is used to refresh the access token."""
     token = credentials.credentials
-    email = await auth_service.get_email_from_token(token)
-    user = await repository_users.get_user_by_email(email, db)
+    token_data = await auth_service.get_data_from_refresh_token(token)
+    user = await repository_users.get_user_by_email(token_data.email, db)
 
     if user.refresh_token != token:
         await repository_users.update_token(user, None, db)

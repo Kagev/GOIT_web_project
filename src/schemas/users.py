@@ -1,14 +1,12 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, EmailStr, AfterValidator
 from typing_extensions import Annotated
-
-
-allowed_roles = ["user", "moderator", "admin"]
+from config import settings
 
 
 def role_in_allowed_roles(role: str) -> str:
     """Ensures role are allowed"""
-    assert role in allowed_roles
+    assert role in settings.allowed_roles
     return role
 
 
@@ -38,3 +36,12 @@ class TokenModel(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+
+
+class ChangePassword(BaseModel):
+    old_password: str = Field(min_length=6, max_length=10)
+    new_password: str = Field(min_length=6, max_length=10)
+
+
+class EmailModel(BaseModel):
+    email: EmailStr

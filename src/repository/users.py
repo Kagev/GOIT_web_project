@@ -4,7 +4,7 @@ from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
 from src.database.models import User
-from src.shemas.users import UserModel
+from src.schemas.users import UserModel
 
 
 async def create_user(body: UserModel, db: Session) -> User:
