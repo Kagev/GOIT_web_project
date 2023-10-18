@@ -13,24 +13,11 @@ def main():
             user = models.User(
                 username=fake.user_name(),
                 email=fake.email(),
-                birth_date=fake.date_of_birth(minimum_age=18, maximum_age=55),
                 created_at=fake.date_time(),
-                confirmed=choice([True, False]),
-                role_id=choice([1, 2, 3]),
+                role=choice(["admin", "moderator", "user"]),
                 password=fake.password(length=8)
             )
             session.add(user)
-
-            user_role = models.UserRole(
-                role_name=choice(["admin", "moderator", "user"])
-            )
-            session.add(user_role)
-
-            photo = models.Photo(
-                description=fake.text(),
-                created_at=fake.date_time()
-            )
-            session.add(photo)
 
         session.commit()
 

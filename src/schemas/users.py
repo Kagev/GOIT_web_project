@@ -24,7 +24,8 @@ class UserDb(BaseModel):
     role: Annotated[str, AfterValidator(role_in_allowed_roles)]
 
     class Config:
-        orm_mode = True
+        # orm_mode = True
+        from_attributes = True
 
 
 class UserResponse(BaseModel):

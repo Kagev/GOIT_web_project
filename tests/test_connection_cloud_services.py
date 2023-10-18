@@ -4,19 +4,20 @@ import psycopg2
 import redis
 import pika
 from cloudinary import CloudinaryImage
-from config.conection_config import *
-from config.conection_db import DATABASE_URL
+
+from config import settings
+from src.database.connection import DATABASE_URL
 
 
 @pytest.fixture
 def mock_redis():
-	return redis.Redis(host=REDIS_DB_HOST, port=REDIS_DB_PORT, password=PASSWORD_REDIS)
+	return redis.Redis(host=settings.REDIS_DB_HOST, port=settings.REDIS_DB_PORT, password=settings.PASSWORD_REDIS)
 
 
 @pytest.fixture
 def mock_pika_connection():
-	credentials = pika.PlainCredentials(USERNAME_MQ, PASSWORD_MQ)
-	parameters = pika.ConnectionParameters(HOST_MQ, PORT_MQ, '/', credentials)
+	credentials = pika.PlainCredentials(settings.USERNAME_MQ, settings.PASSWORD_MQ)
+	parameters = pika.ConnectionParameters(settings.HOST_MQ, settings.PORT_MQ, '/', credentials)
 	return pika.BlockingConnection(parameters)
 
 
