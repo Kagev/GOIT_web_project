@@ -5,7 +5,7 @@ from src.database.models import User
 from src.database.connection import get_db
 from src.repository import image as repository_image
 from src.services.auth import auth_service
-from src.schemas.image import ImageModel
+from ..schemas.image import ImageModel
 
 
 router = APIRouter(prefix="/images", tags=["images"])

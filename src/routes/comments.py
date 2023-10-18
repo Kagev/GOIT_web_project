@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 
-from src.schemas.comments import CommentModel, CommentResponse
+from ..schemas.comments import CommentModel, CommentResponse
 from src.database.connection import get_db
 from src.database.models import User
 from src.repository import comments as repository_comments

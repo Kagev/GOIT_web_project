@@ -1,9 +1,6 @@
 from datetime import datetime, timedelta
-
 from typing import Optional
-
 from sqlalchemy.orm import Session
-
 from pydantic import BaseModel
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
