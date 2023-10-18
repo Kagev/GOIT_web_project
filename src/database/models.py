@@ -1,4 +1,4 @@
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from sqlalchemy import (
 	Column,
 	Integer,
@@ -7,7 +7,7 @@ from sqlalchemy import (
 	DateTime,
 	ForeignKey
 )
-from sqlalchemy.ext.declarative import declarative_base
+
 
 Base = declarative_base()
 

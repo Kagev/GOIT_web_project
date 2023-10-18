@@ -9,7 +9,8 @@ class ImageModel(BaseModel):
     tags: str = Field(min_length=0, max_length=5)
 
     class Config:
-        orm_mode = True
+        # orm_mode = True
+        from_attributes = True
 
 
 class TagModel(BaseModel):
@@ -17,4 +18,5 @@ class TagModel(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        # orm_mode = True
+        from_attributes = True
