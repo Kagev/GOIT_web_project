@@ -2,8 +2,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from datetime import datetime
 
-from src.schemas.users import UserDb
-from src.schemas.image import ImageModel
+from .users import UserDb
+from .image import ImageModel
 
 
 class CommentModel(BaseModel):

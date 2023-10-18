@@ -7,13 +7,7 @@ from src.database.connection import get_db
 from src.repository import users as repository_users
 from src.repository.token_blacklist import add_token_to_blacklist, clear_expires_records
 from src.services.auth import auth_service, TokenData
-from src.schemas.users import (
-    UserModel,
-    UserResponse,
-    TokenModel,
-    UserDb,
-    role_in_allowed_roles,
-)
+from src.schemas.users import UserModel, UserResponse, TokenModel, UserDb, role_in_allowed_roles
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 security = HTTPBearer()

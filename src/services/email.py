@@ -3,7 +3,7 @@ from fastapi_mail import ConnectionConfig, MessageSchema, MessageType, FastMail
 from fastapi_mail.errors import ConnectionErrors
 
 from .auth import auth_service
-from config import settings, Template
+from config import settings
 
 
 conf = ConnectionConfig(
@@ -17,7 +17,7 @@ conf = ConnectionConfig(
     MAIL_SSL_TLS=True,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
-    TEMPLATE_FOLDER=Template.emails,
+    # TEMPLATE_FOLDER=Templates.emails,
 )
 
 
