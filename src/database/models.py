@@ -31,6 +31,7 @@ class Image(Base):
 	__tablename__ = "images"
 
 	id = Column(Integer, primary_key=True, index=True)
+	image_name = Column(String, index=True)
 	user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 	path = Column(String, nullable=False)
 	description = Column(String, nullable=True)
@@ -45,7 +46,6 @@ class Tag(Base):
 
 	id = Column(Integer, primary_key=True, index=True)
 	name = Column(String, unique=True, index=True)
-
 	images = relationship("Image", secondary="image_tags", back_populates="tags")
 
 
