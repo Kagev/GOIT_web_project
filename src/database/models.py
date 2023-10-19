@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 from sqlalchemy import (
     Column,
     Integer,
@@ -8,7 +7,7 @@ from sqlalchemy import (
     ForeignKey
 )
 from sqlalchemy.ext.declarative import declarative_base
-
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 Base = declarative_base()
 
@@ -17,11 +16,13 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    username = Column(String(128), nullable=False)
+    username = Column(String(128), nullable=False, unique=True)
     email = Column(String(128), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=func.now())
-    role = Column(String(64), nullable=False, default="user")
+    is_admin: Mapped[bool] = mapped_column(default=False)
+    is_moderator: Mapped[bool] = mapped_column(default=False)
+    is_banned: Mapped[bool] = mapped_column(default=False)
     refresh_token = Column(String(256), nullable=True)
 
     comments = relationship('Comment', back_populates='users')
@@ -39,6 +40,7 @@ class Image(Base):
     tags = relationship("Tag", secondary="image_tags", back_populates="images")
     comments = relationship('Comment', back_populates='images')
 
+
 class Tag(Base):
     __tablename__ = "tags"
 
@@ -46,6 +48,7 @@ class Tag(Base):
     name = Column(String, unique=True, index=True)
 
     images = relationship("Image", secondary="image_tags", back_populates="tags")
+
 
 class ImageTagAssociation(Base):
     __tablename__ = "image_tags"
@@ -56,7 +59,7 @@ class ImageTagAssociation(Base):
 
 class Comment(Base):
     __tablename__ = 'comments'
-    
+
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String(255), nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)

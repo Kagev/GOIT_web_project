@@ -20,10 +20,10 @@ def get_db():
     db = Session(engine)
     try:
         yield db
-    except SQLAlchemyError as err:
+    except SQLAlchemyError as error:
         db.rollback()
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(err)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(error)
         )
     finally:
         db.close()
