@@ -5,9 +5,9 @@ from sqlalchemy import (
 	String,
 	func,
 	DateTime,
-	ForeignKey
+	ForeignKey,
+	Text,
 )
-
 
 Base = declarative_base()
 
@@ -30,11 +30,12 @@ class Image(Base):
 	__tablename__ = "images"
 
 	id = Column(Integer, primary_key=True, index=True)
+	image_name = Column(String, index=True)
 	user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 	path = Column(String, nullable=False)
 	description = Column(String, nullable=True)
 	created_at = Column(DateTime, default=func.now())
-
+	qr_code = Column(Text)
 	tags = relationship("Tag", secondary="image_tags", back_populates="images")
 	comments = relationship('Comment', back_populates='images')
 
@@ -44,7 +45,6 @@ class Tag(Base):
 
 	id = Column(Integer, primary_key=True, index=True)
 	name = Column(String, unique=True, index=True)
-
 	images = relationship("Image", secondary="image_tags", back_populates="tags")
 
 
@@ -76,3 +76,26 @@ class TokenBL(Base):
 	email = Column(String(128), nullable=True)
 	token = Column(String, nullable=True)
 	added_at = Column("added_at", DateTime, default=func.now())
+
+
+class CloudinaryResource(Base):
+	__tablename__ = "cloudinary_resources"
+
+	id = Column(Integer, primary_key=True)
+	public_id = Column(String, nullable=False)
+	format = Column(String)
+	version = Column(Integer)
+	resource_type = Column(String)
+	created_at = Column(DateTime, default=func.now())
+	tags = Column(String)
+	bytes = Column(Integer)
+	width = Column(Integer)
+	height = Column(Integer)
+	url = Column(String)
+	secure_url = Column(String)
+	next_cursor = Column(String)
+	transformation = Column(String)
+	pages = Column(String)
+
+	image_id = Column(Integer, ForeignKey("images.id"))
+	image = relationship("Image", back_populates="cloudinary_resource")

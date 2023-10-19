@@ -10,7 +10,7 @@ from config import settings
 
 cloudinary.config(
     cloud_name=settings.cloudinary_name,
-    api_key=settings.cloudinary_api_key,
+    api_key=settings.cloudinary_api,
     api_secret=settings.cloudinary_api_secret,
     secure=True,
 )
