@@ -38,18 +38,18 @@ class Settings(BaseSettings):
 	allowed_roles: list = ["user", "moderator", "admin"]
 
 	# Redis cloud
-	REDIS_DB_NAME: str = os.getenv("REDIS_DB_NAME")
-	REDIS_ENDPOINT: str = os.getenv("REDIS_DB_ENDPOINT")
-	USERNAME_REDIS: str = os.getenv("USERNAME_REDIS")
-	PASSWORD_REDIS: str = os.getenv("PASSWORD_REDIS")
-	REDIS_DB_HOST: str = os.getenv("REDIS_DB_HOST")
-	REDIS_DB_PORT: int = os.getenv("REDIS_DB_PORT")
+	redis_db_name: str = os.getenv("REDIS_DB_NAME")
+	redis_endpoint: str = os.getenv("REDIS_DB_ENDPOINT")
+	redis_username: str = os.getenv("USERNAME_REDIS")
+	redis_password: str = os.getenv("PASSWORD_REDIS")
+	redis_db_host: str = os.getenv("REDIS_DB_HOST")
+	redis_db_port: int = os.getenv("REDIS_DB_PORT")
 
 	# Cloudinary
-	CLOUDINARY_NAME: str = os.getenv("CLOUD_NAME")
-	CLOUDINARY_API: str = os.getenv("CLOUD_API_KEY")
-	CLOUDINARY_API_SECRET: str = os.getenv("CLOUD_API_SECRET")
-	CLOUDINARY_URL: str = os.getenv("CLOUDINARY_URL")
+	cloudinary_name: str = os.getenv("CLOUDINARY_NAME")
+	cloudinary_api: str = os.getenv("CLOUDINARY_API_KEY")
+	cloudinary_api_secret: str = os.getenv("CLOUDINARY_API_SECRET")
+	cloudinary_url: str = os.getenv("CLOUDINARY_URL")
 
 	# LavinaMQ - analog RebbitMQ
 	CLUSTER_MQ: str = os.getenv("CLUSTER_MQ")

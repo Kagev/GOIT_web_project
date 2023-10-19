@@ -9,7 +9,6 @@ from sqlalchemy import (
 	Text,
 )
 
-
 Base = declarative_base()
 
 
@@ -77,3 +76,26 @@ class TokenBL(Base):
 	email = Column(String(128), nullable=True)
 	token = Column(String, nullable=True)
 	added_at = Column("added_at", DateTime, default=func.now())
+
+
+class CloudinaryResource(Base):
+	__tablename__ = "cloudinary_resources"
+
+	id = Column(Integer, primary_key=True)
+	public_id = Column(String, nullable=False)
+	format = Column(String)
+	version = Column(Integer)
+	resource_type = Column(String)
+	created_at = Column(DateTime, default=func.now())
+	tags = Column(String)
+	bytes = Column(Integer)
+	width = Column(Integer)
+	height = Column(Integer)
+	url = Column(String)
+	secure_url = Column(String)
+	next_cursor = Column(String)
+	transformation = Column(String)
+	pages = Column(String)
+
+	image_id = Column(Integer, ForeignKey("images.id"))
+	image = relationship("Image", back_populates="cloudinary_resource")
