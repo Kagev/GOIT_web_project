@@ -19,7 +19,7 @@ COPY . .
 EXPOSE $PORT
 
 # Run alembic migrations
-RUN alembic revision --autogenerate -m 'koyeb_initial' && alembic upgrade head
+#RUN alembic revision --autogenerate -m 'koyeb_initial' && alembic upgrade head
 
 # Run the application
 CMD ["python", "main.py"]
