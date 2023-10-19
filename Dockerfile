@@ -8,22 +8,18 @@ ENV PORT 8000
 # set the working directory inside the container
 WORKDIR $APP_HOME
 
-# Installing dependencies for accessing services
-#COPY poetry.lock $APP_HOME/poetry.lock
-#COPY pyproject.toml $APP_HOME/pyproject.toml
-#RUN pip install poetry && poetry config virtualenvs.create false && poetry install -- only main
+# Installing dependencies
 COPY requirements.txt $APP_HOME/
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-
-# Copying your application to a container
+# Copying your application to the container
 COPY . .
 
 # Set the port app
 EXPOSE $PORT
 
-RUN alembic revision --autogenerate -m 'initial' && RUN alembic upgrade head
-# run app
-#CMD ["python", "python_web_project/main.py", "runserver", "0.0.0.0:8000"]
+# Run alembic migrations
+RUN alembic revision --autogenerate -m 'koyeb_initial' && alembic upgrade head
+
+# Run the application
 CMD ["python", "main.py"]
