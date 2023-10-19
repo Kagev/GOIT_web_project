@@ -5,7 +5,8 @@ from sqlalchemy import (
 	String,
 	func,
 	DateTime,
-	ForeignKey
+	ForeignKey,
+	Text,
 )
 
 
@@ -34,7 +35,7 @@ class Image(Base):
 	path = Column(String, nullable=False)
 	description = Column(String, nullable=True)
 	created_at = Column(DateTime, default=func.now())
-
+	qr_code = Column(Text)
 	tags = relationship("Tag", secondary="image_tags", back_populates="images")
 	comments = relationship('Comment', back_populates='images')
 

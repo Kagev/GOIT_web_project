@@ -14,6 +14,8 @@ WORKDIR $APP_HOME
 #RUN pip install poetry && poetry config virtualenvs.create false && poetry install -- only main
 COPY requirements.txt $APP_HOME/
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
 
 # Copying your application to a container
 COPY . .
@@ -21,6 +23,7 @@ COPY . .
 # Set the port app
 EXPOSE $PORT
 
+RUN alembic revision --autogenerate -m 'initial' && RUN alembic upgrade head
 # run app
 #CMD ["python", "python_web_project/main.py", "runserver", "0.0.0.0:8000"]
 CMD ["python", "main.py"]
