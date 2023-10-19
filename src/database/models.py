@@ -97,5 +97,3 @@ class CloudinaryResource(Base):
 	transformation = Column(String)
 	pages = Column(String)
 
-	image_id = Column(Integer, ForeignKey("images.id"))
-	image = relationship("Image", back_populates="cloudinary_resource")
