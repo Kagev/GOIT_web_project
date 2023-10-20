@@ -67,7 +67,7 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         :doc-author: yarmel
     """
 
-    user = await users_repository.get_user_by_email(body.username, db)
+    user = await users_repository.get_user_by_username(body.username, db)
 
     if user is None:
         raise HTTPException(
