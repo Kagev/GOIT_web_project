@@ -26,6 +26,7 @@ def upload_image(
     :param user_id: int: Specify the user id of the user who uploaded the image
     :param return_size: tuple[int, int]: Set the width and height of the image
     :return: The url of the uploaded image
+    :doc-author: kagev
     """
     file_id = settings.cloudinary_folder + f"avatar_{user_id}"
     upload(file, public_id=file_id, owerwrite=True)
@@ -47,6 +48,7 @@ def transform_img(public_id, width, height, crop):
     :param height: set the image height for cropping
     :param crop: a command that crops according to the Height and Width parameters we set
     :return: The returns us images from Cloudinary transformed_url
+    :doc-author: kagev
     """
 
     # url, options = cloudinary_url("olympic_flag", width=100, height=150, crop="fill")
@@ -72,6 +74,7 @@ def optimize_media(public_id, quality=80):
     :param public_id: str: Public ID of the image to optimize
     :param quality: int: Image quality (0-100), where 0 is the lowest quality and 100 is the highest.
     :return: The response from Cloudinary
+    :doc-author: kagev
     """
     # Set quality for optimization
     update_result = cloudinary.update(public_id, quality=quality)

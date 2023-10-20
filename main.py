@@ -19,6 +19,7 @@ async def startup():
     It's a good place to initialize things that are used by the app, like databases or caches.
 
     :return: A coroutine, so we need to call it with await
+
     """
     await FastAPILimiter.init(
         await redis.Redis(
