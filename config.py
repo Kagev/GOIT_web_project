@@ -52,13 +52,13 @@ class Settings(BaseSettings):
 	cloudinary_url: str = os.getenv("CLOUDINARY_URL")
 
 	# LavinaMQ - analog RebbitMQ
-	CLUSTER_MQ: str = os.getenv("CLUSTER_MQ")
-	HOST_MQ: str = os.getenv("HOST_MQ")
-	USERNAME_MQ: str = os.getenv("USER_MQ")
-	PASSWORD_MQ: str = os.getenv("PASSWORD_MQ")
-	URL_MQ: str = os.getenv("URL_MQ")
-	PORT_MQ: int = os.getenv("PORT_MQ")
-	TSL_PORT_MQ: int = os.getenv("PORT_MQ_TSL")
+	lavina_cluster: str = os.getenv("CLUSTER_MQ")
+	lavina_host: str = os.getenv("HOST_MQ")
+	lavina_user: str = os.getenv("USER_MQ")
+	lavina_password: str = os.getenv("PASSWORD_MQ")
+	lavina_url: str = os.getenv("URL_MQ")
+	lavina_port: int = os.getenv("PORT_MQ")
+	lavina_port_tsl: int = os.getenv("PORT_MQ_TSL")
 
 
 settings = Settings()
