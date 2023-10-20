@@ -7,7 +7,7 @@ from sqlalchemy import (
 	ForeignKey,
 	Text,
 )
-from sqlalchemy.ext.declarative import declarative_base
+
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship, mapped_column, Mapped
 
 Base = declarative_base()
