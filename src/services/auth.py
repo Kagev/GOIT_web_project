@@ -1,23 +1,22 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from sqlalchemy.orm import Session
-from pydantic import BaseModel
+
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 from config import settings
-
-from src.database.models import User
 from src.database.connection import get_db
-from src.repository.users import get_user_by_email
-from src.repository.token_blacklist import is_token_blacklisted
+from src.database.models import User
+from src.repository import token as token_repository
+from src.services.users import users_service
 
 
 class TokenData(BaseModel):
     email: Optional[str]
-    role: Optional[str]
 
 
 class Auth:
@@ -45,7 +44,7 @@ class Auth:
         return jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
 
     async def create_access_token(
-        self, data: dict, expires_delta: Optional[float] = None
+            self, data: dict, expires_delta: Optional[float] = None
     ) -> str:
         expire = datetime.utcnow() + (
             timedelta(minutes=expires_delta)
@@ -55,7 +54,7 @@ class Auth:
         return self.__encode_jwt(data, datetime.utcnow(), expire, "access_token")
 
     async def create_refresh_token(
-        self, data: dict, expires_delta: Optional[float] = None
+            self, data: dict, expires_delta: Optional[float] = None
     ) -> str:
         expire = datetime.utcnow() + (
             timedelta(minutes=expires_delta)
@@ -64,17 +63,14 @@ class Auth:
         )
         return self.__encode_jwt(data, datetime.utcnow(), expire, "refresh_token")
 
-    async def get_token_data(
-        self, access_token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    async def get_data_from_access_token(
+            self, access_token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
     ) -> TokenData:
-        if not await is_token_blacklisted(access_token, db):
+        if not await token_repository.is_token_blacklisted(access_token, db):
             try:
                 payload = self.__decode_jwt(access_token)
-
                 if payload.get("scope") == "access_token":
-                    user_email = payload.get("email")
-                    user_role = payload.get("role")
-                    return TokenData(email=user_email, role=user_role)
+                    return TokenData(**payload)
 
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,10 +81,9 @@ class Auth:
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Could not validate credentials",
                 )
-
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="This token is no more valid. Login.",
+            detail="This token is no longer valid. Login."
         )
 
     async def get_data_from_refresh_token(self, refresh_token: str) -> TokenData:
@@ -111,16 +106,12 @@ class Auth:
             )
 
     async def get_current_user(
-        self, access_token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+            self, access_token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
     ) -> User:
-        token_data = await self.get_token_data(access_token, db)
-        current_user = await get_user_by_email(token_data.email, db)
-        if not current_user:
-            raise HTTPException(
-                status_code=status.HTTP_204_NO_CONTENT,
-                detail=f"Account with email {token_data.email} not exists",
-            )
-        return current_user
+        token_data = await self.get_data_from_access_token(access_token, db)
+        current_user = await users_service.get_user_by_email(token_data.email, db)
+        if await users_service.user_check(current_user):
+            return current_user
 
 
 auth_service = Auth()

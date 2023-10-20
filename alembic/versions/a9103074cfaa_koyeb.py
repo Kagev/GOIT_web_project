@@ -1,8 +1,8 @@
-"""initial
+"""koyeb
 
-Revision ID: 2de1c760ccdf
+Revision ID: a9103074cfaa
 Revises: 
-Create Date: 2023-10-19 00:04:43.076441
+Create Date: 2023-10-20 14:35:11.903576
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2de1c760ccdf'
+revision: str = 'a9103074cfaa'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,6 +25,24 @@ def upgrade() -> None:
     sa.Column('email', sa.String(length=128), nullable=True),
     sa.Column('token', sa.String(), nullable=True),
     sa.Column('added_at', sa.DateTime(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('cloudinary_resources',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('public_id', sa.String(), nullable=False),
+    sa.Column('format', sa.String(), nullable=True),
+    sa.Column('version', sa.Integer(), nullable=True),
+    sa.Column('resource_type', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('tags', sa.String(), nullable=True),
+    sa.Column('bytes', sa.Integer(), nullable=True),
+    sa.Column('width', sa.Integer(), nullable=True),
+    sa.Column('height', sa.Integer(), nullable=True),
+    sa.Column('url', sa.String(), nullable=True),
+    sa.Column('secure_url', sa.String(), nullable=True),
+    sa.Column('next_cursor', sa.String(), nullable=True),
+    sa.Column('transformation', sa.String(), nullable=True),
+    sa.Column('pages', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('tags',
@@ -40,10 +58,13 @@ def upgrade() -> None:
     sa.Column('email', sa.String(length=128), nullable=False),
     sa.Column('password', sa.String(length=128), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('role', sa.String(length=64), nullable=False),
+    sa.Column('is_admin', sa.Boolean(), nullable=False),
+    sa.Column('is_moderator', sa.Boolean(), nullable=False),
+    sa.Column('is_banned', sa.Boolean(), nullable=False),
     sa.Column('refresh_token', sa.String(length=256), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email')
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('images',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -88,5 +109,6 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_tags_name'), table_name='tags')
     op.drop_index(op.f('ix_tags_id'), table_name='tags')
     op.drop_table('tags')
+    op.drop_table('cloudinary_resources')
     op.drop_table('blacklist')
     # ### end Alembic commands ###

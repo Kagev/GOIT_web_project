@@ -13,6 +13,9 @@ load_dotenv(dotenv_path=env_path)
 
 
 class Config:
+	"""
+
+	"""
 	# env_file = ".env"
 	env_file = env_path
 	env_file_encoding = "utf-8"
@@ -20,19 +23,19 @@ class Config:
 
 
 class Settings(BaseSettings):
-	# DB block
-	postgres_name: str = os.getenv("POSTGRES_DB_NAME")
-	postgres_user: str = os.getenv("USERNAME_ELEPHANT")
-	postgres_password: str = os.getenv("PASSWORD_ELEPHANT")
-	postgres_domain: str = os.getenv("POSTGRES_HOST")
-	postgres_port: str = os.getenv("POSTGRES_PORT")
-	postgres_url: str = os.getenv("URL_ELEPHANT")
-
 	# Token block
-	algorithm: str = os.getenv('ALGORITHM')
 	expires_delta_access_token: str = os.getenv('JWT_TOKEN')
 	expires_delta_refresh_token: str = os.getenv('REF_JWT_TOKEN')
+	algorithm: str = os.getenv('ALGORITHM')
 	secret_key: str = os.getenv('SECRET_KEY')
+
+	# DB block
+	postgres_name: str = os.getenv("POSTGRES_DB_NAME")
+	postgres_user: str = os.getenv("POSTGRES_USERNAME")
+	postgres_password: str = os.getenv("POSTGRES_PASSWORD")
+	postgres_domain: str = os.getenv("POSTGRES_HOST")
+	postgres_port: str = os.getenv("POSTGRES_PORT")
+	postgres_url: str = os.getenv("POSTGRES_URL")
 
 	# Users block
 	allowed_roles: list = ["user", "moderator", "admin"]
@@ -40,11 +43,11 @@ class Settings(BaseSettings):
 	# Redis cloud
 	redis_db_name: str = os.getenv("REDIS_DB_NAME")
 	redis_endpoint: str = os.getenv("REDIS_DB_ENDPOINT")
-	redis_username: str = os.getenv("USERNAME_REDIS")
-	redis_password: str = os.getenv("PASSWORD_REDIS")
-	redis_db_host: str = os.getenv("REDIS_DB_HOST")
-	redis_db_port: int = os.getenv("REDIS_DB_PORT")
-
+	redis_username: str = os.getenv("REDIS_USERNAME")
+	redis_password: str = os.getenv("REDIS_PASSWORD")
+	redis_host: str = os.getenv("REDIS_DB_HOST")
+	redis_port: int = os.getenv("REDIS_DB_PORT")
+	redis_url: str = os.getenv("REDIS_URL")
 	# Cloudinary
 	cloudinary_name: str = os.getenv("CLOUDINARY_NAME")
 	cloudinary_api: str = os.getenv("CLOUDINARY_API_KEY")
@@ -52,13 +55,13 @@ class Settings(BaseSettings):
 	cloudinary_url: str = os.getenv("CLOUDINARY_URL")
 
 	# LavinaMQ - analog RebbitMQ
-	CLUSTER_MQ: str = os.getenv("CLUSTER_MQ")
-	HOST_MQ: str = os.getenv("HOST_MQ")
-	USERNAME_MQ: str = os.getenv("USER_MQ")
-	PASSWORD_MQ: str = os.getenv("PASSWORD_MQ")
-	URL_MQ: str = os.getenv("URL_MQ")
-	PORT_MQ: int = os.getenv("PORT_MQ")
-	TSL_PORT_MQ: int = os.getenv("PORT_MQ_TSL")
+	lavina_cluster: str = os.getenv("LAVINA_CLUSTER")
+	lavina_host: str = os.getenv("LAVINA_HOST")
+	lavina_user: str = os.getenv("LAVINA_USER")
+	lavina_password: str = os.getenv("LAVINA_PASSWORD")
+	lavina_url: str = os.getenv("LAVINA_URL")
+	lavina_port: int = os.getenv("LAVINA_PORT")
+	lavina_port_tsl: int = os.getenv("LAVINA_PORT_TSL")
 
 
 settings = Settings()
