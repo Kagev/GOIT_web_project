@@ -1,7 +1,3 @@
-import asyncio
-
-from sqlalchemy.orm import Session
-
 from src.database.connection import get_db
 from src.schemas.qr_schemas import QRCodeSchema, QRImageSchema
 from datetime import datetime
