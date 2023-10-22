@@ -1,3 +1,4 @@
+from psycopg2 import Date
 from sqlalchemy import (
 	Column,
 	Integer,
@@ -5,6 +6,7 @@ from sqlalchemy import (
 	func,
 	DateTime,
 	ForeignKey,
+	Text
 
 )
 
@@ -99,3 +101,13 @@ class CloudinaryResource(Base):
 	next_cursor = Column(String)
 	transformation = Column(String)
 	pages = Column(String)
+
+
+class QRImageResource(Base):
+	__tablename__ = "qr_image_resources"
+
+	id = Column(Integer, primary_key=True)
+	img_transform_url = Column(String(255), nullable=False)
+	public_id = Column(String(255), nullable=False)
+	qr_code_url = Column(Text, nullable=False)
+	created_at = Column(DateTime, default=func.now())

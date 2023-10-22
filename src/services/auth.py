@@ -45,22 +45,23 @@ class Auth:
 
     async def create_access_token(
             self, data: dict, expires_delta: Optional[float] = None
-    ) -> str:
+    ):
         expire = datetime.utcnow() + (
             timedelta(minutes=expires_delta)
             if expires_delta
-            else timedelta(self.expires_delta_access_token)
+            else timedelta(minutes=15)
         )
         return self.__encode_jwt(data, datetime.utcnow(), expire, "access_token")
 
     async def create_refresh_token(
             self, data: dict, expires_delta: Optional[float] = None
-    ) -> str:
+    ):
         expire = datetime.utcnow() + (
             timedelta(minutes=expires_delta)
             if expires_delta
-            else timedelta(self.expires_delta_refresh_token)
+            else timedelta(minutes=90)
         )
+
         return self.__encode_jwt(data, datetime.utcnow(), expire, "refresh_token")
 
     async def get_data_from_access_token(
