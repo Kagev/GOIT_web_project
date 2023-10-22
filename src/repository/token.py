@@ -18,6 +18,10 @@ async def add_token_to_blacklist(email: str, token: str, db: Session) -> bool:
     :return: True if it successful.
     :doc-author: yarmel
     """
+    token_exists = await db.execute(select(TokenBL).filter(TokenBL.token == token)).scalar()
+    if token_exists:
+        return False
+
     tokens_table = TokenBL()
     tokens_table.email = email
     tokens_table.token = token
@@ -49,6 +53,9 @@ async def clear_expires_records(db: Session):
     :return: None.
     :doc-author: yarmel
     """
+
+    # We remove tokens from the database that were added before their expiration date
+
     expired_time = datetime.utcnow() - timedelta(minutes=settings.expires_delta_access_token)
     db.execute(delete(TokenBL).where(TokenBL.added_at < expired_time))
     db.commit()

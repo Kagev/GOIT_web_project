@@ -1,10 +1,21 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
-class CommentModel(BaseModel):
-	image_name: str
-	qr_code: str
+class QRCodeSchema(BaseModel):
+	qr_code_url: str
+	public_id: str
+	img_transform_url: str
+	created_at: datetime
+
+	class Config:
+		from_attributes = True
 
 
-class CommentResponse(BaseModel):
-	user: CommentModel
+class QRImageSchema(BaseModel):
+	image_url: str
+	url: str
+	created_at: datetime
+
+	class Config:
+		from_attributes = True

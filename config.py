@@ -53,6 +53,7 @@ class Settings(BaseSettings):
 	cloudinary_api: str = os.getenv("CLOUDINARY_API_KEY")
 	cloudinary_api_secret: str = os.getenv("CLOUDINARY_API_SECRET")
 	cloudinary_url: str = os.getenv("CLOUDINARY_URL")
+	cloudinary_folder: str = os.getenv("CLOUDINARY_FOLDERS")
 
 	# LavinaMQ - analog RebbitMQ
 	lavina_cluster: str = os.getenv("LAVINA_CLUSTER")

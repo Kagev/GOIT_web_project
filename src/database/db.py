@@ -16,7 +16,7 @@ def get_db():
         db.close()
 
 
-# Функция для выполнения SQL-запросов с возможностью получения результатов как словарей
+# function for executing SQL queries with the ability to obtain results as dictionaries
 def execute_query(query, params=None):
     with engine.connect() as conn:
         result = conn.execute(query, params)

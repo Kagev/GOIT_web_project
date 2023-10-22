@@ -67,7 +67,7 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
         :doc-author: yarmel
     """
 
-    user = await users_repository.get_user_by_email(body.username, db)
+    user = await users_repository.get_user_by_username(body.username, db)
 
     if user is None:
         raise HTTPException(
@@ -76,69 +76,6 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
     if not auth_service.verify_password(body.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password"
-        )
-
-    # Generate JWT
-    access_token = await auth_service.create_access_token(
-        data={"email": user.email}
-    )
-    refresh_token = await auth_service.create_refresh_token(
-        data={"email": user.email}
-    )
-
-    await users_repository.update_token(user, refresh_token, db)
-
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
-    }
-
-
-@router.post("/logout")
-async def logout(access_token: str = Depends(auth_service.oauth2_scheme), db: Session = Depends(get_db)):
-    """
-    The logout function is used to logout a user.
-        The function adding user access token to blacklist in database.
-
-        :param access_token: str: Not decoded access token.
-        :param db: Session: Access the database.
-        :return: A dictionary with result of operation.
-        :doc-author: yarmel
-    """
-    token_data = await auth_service.get_data_from_access_token(access_token, db)
-    if await token_repository.add_token_to_blacklist(token_data.email, access_token, db):
-        return {'result': "Logout successful"}
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-    )
-
-
-@router.get("/refresh_token", response_model=TokenModel)
-async def refresh_token(
-    credentials: HTTPAuthorizationCredentials = Security(security),
-    db: Session = Depends(get_db),
-):
-    """
-    The refresh_token function is used to refresh the access token.
-        The function takes in a refresh token and returns a new access_token and refresh_token pair.
-        If the user's current refresh token does not match what was passed into this function, then it will return an error.
-
-        :param credentials: HTTPAuthorizationCredentials: Retrieve the token from the header
-        :param db: Session: Access the database
-        :return: A dictionary with the access_token, refresh_token and token type
-        :doc-author: yarmel
-    """
-
-    token = credentials.credentials
-    token_data = await auth_service.get_data_from_refresh_token(token)
-    user = await users_repository.get_user_by_email(token_data.email, db)
-
-    if user.refresh_token != token:
-        await users_repository.update_token(user, None, db)
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
         )
 
     # Generate JWT
