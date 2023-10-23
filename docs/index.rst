@@ -1,0 +1,132 @@
+.. PyCrafters-FastAPI documentation master file, created by
+   sphinx-quickstart on Thu Oct 19 12:56:22 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to PyCrafters-FastAPI's documentation!
+============================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+REST API main
+===================
+.. automodule:: main
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API config
+===================
+.. automodule:: config
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API repository cloudinary
+==============================
+.. automodule:: src.repository.cloudinary
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API repository comments
+=============================
+.. automodule:: src.repository.comments
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API repository image
+=============================
+.. automodule:: src.repository.image
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API repository token_blacklist
+===================================
+.. automodule:: src.repository.token_blacklist
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API repository users
+==========================
+.. automodule:: src.repository.users
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API routes auth
+==========================
+.. automodule:: src.routes.auth
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API routes cloudinary
+===========================
+.. automodule:: src.routes.cloudinary
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API routes comments
+===========================
+.. automodule:: src.routes.comments
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API routes image
+===========================
+.. automodule:: src.routes.image
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API routes qr_routes
+===========================
+.. automodule:: src.routes.qr_routes
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API services auth
+===========================
+.. automodule:: src.services.auth
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API services cloudinary
+=============================
+.. automodule:: src.services.cloudinary
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+
+REST API services qr_code
+=============================
+.. automodule:: src.services.qr_code
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API services email
+=============================
+.. automodule:: src.services.email
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

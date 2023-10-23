@@ -1,67 +1,113 @@
-from sqlalchemy import Integer, Column, String, ForeignKey, DateTime, func
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from src.database.db import engine
+from psycopg2 import Date
+from sqlalchemy import (
+	Column,
+	Integer,
+	String,
+	func,
+	DateTime,
+	ForeignKey,
+	Text
 
+)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+from sqlalchemy.orm import declarative_base, relationship, mapped_column, Mapped
+
 Base = declarative_base()
 
 
-class UserRole(Base):
-    __tablename__ = "user_roles"
-    id = Column(Integer, primary_key=True, index=True)
-    role_name = Column(String(50), unique=True, nullable=False)
-
-
 class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False)
-    email = Column(String(250), unique=True, nullable=False)
-    password = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=func.now())
-    avatar = Column(String(255))
-    refresh_token = Column(String(255))
-    confirmed = Column(default=False)
-    role_id = Column(Integer, ForeignKey("user_roles.id"), nullable=False)
-    role = relationship("UserRole", back_populates="users")
+	__tablename__ = "users"
+
+	id = Column(Integer, primary_key=True)
+	username = Column(String(128), nullable=False, unique=True)
+	email = Column(String(128), nullable=False, unique=True)
+	password = Column(String(128), nullable=False)
+	created_at = Column(DateTime, default=func.now())
+	is_admin: Mapped[bool] = mapped_column(default=False)
+	is_moderator: Mapped[bool] = mapped_column(default=False)
+	is_banned: Mapped[bool] = mapped_column(default=False)
+	refresh_token = Column(String(256), nullable=True)
+
+	comments = relationship('Comment', back_populates='users')
 
 
-class Photo(Base):
-    __tablename__ = "photos"
+class Image(Base):
+	__tablename__ = "images"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    path = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    tags = relationship("Tag", secondary="image_tags", back_populates="images")
-    created_at = Column(DateTime, default=func.now())
+	id = Column(Integer, primary_key=True, index=True)
+	user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+	path = Column(String, nullable=False)
+	description = Column(String, nullable=True)
+	created_at = Column(DateTime, default=func.now())
+
+	tags = relationship("Tag", secondary="image_tags", back_populates="images")
+	comments = relationship('Comment', back_populates='images')
 
 
 class Tag(Base):
-    __tablename__ = "tags"
+	__tablename__ = "tags"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
-    images = relationship("Photo", secondary="photo_tags", back_populates="tags")
+	id = Column(Integer, primary_key=True, index=True)
+	name = Column(String, unique=True, index=True)
+
+	images = relationship("Image", secondary="image_tags", back_populates="tags")
 
 
-class PhotoTagAssociation(Base):
-    __tablename__ = "photo_tags"
+class ImageTagAssociation(Base):
+	__tablename__ = "image_tags"
 
-    image_id = Column(Integer, ForeignKey("photos.id"), primary_key=True)
-    tag_id = Column(Integer, ForeignKey("tags.id"), primary_key=True)
+	image_id = Column(Integer, ForeignKey("images.id"), primary_key=True)
+	tag_id = Column(Integer, ForeignKey("tags.id"), primary_key=True)
 
 
 class Comment(Base):
-    __tablename__ = 'comments'
-    id = Column(Integer, primary_key=True, index=True)
-    content = Column(String(255), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    photo_id = Column(Integer, ForeignKey('photos.id'), nullable=False)
-    created_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now())
+	__tablename__ = 'comments'
 
-    user = relationship('User', back_populates='comments')
-    photo = relationship('Photo', back_populates='comments')
+	id = Column(Integer, primary_key=True, index=True)
+	content = Column(String(255), nullable=False)
+	user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+	image_id = Column(Integer, ForeignKey('images.id'), nullable=False)
+	created_at = Column(DateTime, default=func.now())
+	updated_at = Column(DateTime, default=func.now())
+
+	users = relationship('User', back_populates='comments')
+	images = relationship('Image', back_populates='comments')
+
+
+class TokenBL(Base):
+	__tablename__ = "blacklist"
+
+	id = Column(Integer, primary_key=True)
+	email = Column(String(128), nullable=True)
+	token = Column(String, nullable=True)
+	added_at = Column("added_at", DateTime, default=func.now())
+
+
+class CloudinaryResource(Base):
+	__tablename__ = "cloudinary_resources"
+
+	id = Column(Integer, primary_key=True)
+	public_id = Column(String, nullable=False)
+	format = Column(String)
+	version = Column(Integer)
+	resource_type = Column(String)
+	created_at = Column(DateTime, default=func.now())
+	tags = Column(String)
+	bytes = Column(Integer)
+	width = Column(Integer)
+	height = Column(Integer)
+	url = Column(String)
+	secure_url = Column(String)
+	next_cursor = Column(String)
+	transformation = Column(String)
+	pages = Column(String)
+
+
+class QRImageResource(Base):
+	__tablename__ = "qr_image_resources"
+
+	id = Column(Integer, primary_key=True)
+	img_transform_url = Column(String(255), nullable=False)
+	public_id = Column(String(255), nullable=False)
+	qr_code_url = Column(Text, nullable=False)
+	created_at = Column(DateTime, default=func.now())

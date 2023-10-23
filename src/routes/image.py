@@ -2,10 +2,11 @@ from fastapi import APIRouter, Depends, status, UploadFile, File, Form, HTTPExce
 from sqlalchemy.orm import Session
 from typing import List
 from src.database.models import User
-from src.schemas.image import ImageModel
-from src.database.db import get_db
+from src.database.connection import get_db
 from src.repository import image as repository_image
 from src.services.auth import auth_service
+from ..schemas.image import ImageModel
+
 
 router = APIRouter(prefix="/images", tags=["images"])
 
@@ -19,19 +20,16 @@ async def create_image(
     current_user: User = Depends(auth_service.get_current_user),
 ) -> ImageModel:
     """
-    Эндпоинт для загрузки изображения пользователем.
-
+    Endpoint for uploading an image by the user.
     Parameters:
-    - file: файл изображения, загружаемый пользователем.
-    - description: строка, описывающая изображение.
-    - tags: список строк, представляющих теги, связанные с изображением.
-    - db: объект сессии базы данных SQLAlchemy.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
-
-    Returns:
-    - ImageModel: модель изображения с полями id, user_id, description и tags.
-
+        :param file: str: image file uploaded by the user.
+        :param description: str: describing the image.
+        :param tags: a list of strings representing tags associated with the image.
+        :param db: SQLAlchemy database session object.
+        :param current_user: a user object representing the currently authenticated user.
+        :return: ImageModel: модель изображения с полями id, user_id, description и tags.
     """
+
     # Попытка создать изображение
     image = await repository_image.create_image(
         file, description, tags, db, user_id=current_user.id
@@ -51,26 +49,26 @@ async def get_image(
     db: Session = Depends(get_db),
 ) -> ImageModel:
     """
-    Эндпоинт для получения изображения по его идентификатору.
-
+    Endpoint for retrieving an image by its ID.
     Parameters:
-    - image_id: идентификатор изображения.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
-    - db: объект сессии базы данных SQLAlchemy.
-
-    Returns:
-    - ImageModel: модель изображения с полями path, user_id, description и tags.
-
+        :param image_id: str: image ID.
+        :param current_user: a user object representing the currently authenticated user.
+        :param db: SQLAlchemy database session object.
+        :return: image model with path, user id, description and tags fields.
     Raises:
-    - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
-    - HTTPException: 404 Not Found, если изображение не найдено.
+        HTTPException: 403 Forbidden, if the user is not an administrator or the owner of the image.
+        HTTPException: 404 Not Found, if the image is not found.
     """
+
+
     image = await repository_image.get_image(image_id, db, user_id=current_user.id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+    elif not (
+        current_user.role in ("admin", "moderator") or current_user.id == image.user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -92,27 +90,26 @@ async def update_image(
     db: Session = Depends(get_db),
 ) -> dict:
     """
-    Эндпоинт для обновления описания изображения.
-
+    Endpoint for updating the image description.
     Parameters:
-    - image_id: идентификатор изображения.
-    - description: новое описание изображения.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
-    - db: объект сессии базы данных SQLAlchemy.
-
-    Returns:
-    - dict: словарь с сообщением об успешном обновлении.
-
+        :param image_id: image id
+        :param description: new image description.
+        :param current_user: a user object representing the currently authenticated user.
+        :param db: SQLAlchemy database session object.
+        :return: dict: dictionary with a message about successful update.
     Raises:
-    - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
-    - HTTPException: 404 Not Found, если изображение не найдено.
+        HTTPException: 403 Forbidden, if the user is not an administrator or the owner of the image.
+        HTTPException: 404 Not Found, if the image is not found.
     """
+
     image = await repository_image.get_image(image_id, db, user_id=current_user.id)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+    elif not (
+        current_user.role in ("admin", "moderator") or current_user.id == image.user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",
@@ -126,30 +123,32 @@ async def update_image(
 @router.delete("/deleteimage/{image_id}", response_model=ImageModel)
 async def delete_image(
     image_id: int,
-    db: Session(get_db),
+    db: Session = Depends(get_db),
     current_user: User = Depends(auth_service.get_current_user),
 ) -> dict:
     """
-    Эндпоинт для удаления изображения по его идентификатору.
-
+    Endpoint for deleting an image by its ID.
     Parameters:
-    - image_id: идентификатор изображения.
-    - db: объект сессии базы данных SQLAlchemy.
-    - current_user: объект пользователя, представляющий текущего аутентифицированного пользователя.
-
+        :param image_id:  image id
+        :param db:
+        :param current_user: a user object representing the currently authenticated user.
+        :return:
     Returns:
-    - dict: словарь с сообщением об успешном удалении.
+        :return: dict: dictionary with a message about successful deletion.
 
     Raises:
-    - HTTPException: 403 Forbidden, если пользователь не администратор и не владелец изображения.
-    - HTTPException: 404 Not Found, если изображение не найдено.
+    HTTPException: 403 Forbidden, if the user is not an administrator or the owner of the image.
+    HTTPException: 404 Not Found, if the image is not found.
     """
-    image = await repository_image.get_image(image_id, db, user_id=current_user.id)
+
+    image = await repository_image.get_image(image_id, current_user.id, db)
     if not image:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
         )
-    elif not (current_user.role == "admin" or current_user.id == image.user_id):
+    elif not (
+        current_user.role in ("admin", "moderator") or current_user.id == image.user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to perform this action",

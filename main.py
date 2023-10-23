@@ -1,30 +1,46 @@
 import uvicorn
+import redis.asyncio as redis
+from fastapi import FastAPI
+from fastapi_limiter import FastAPILimiter
+from config import settings
+from src.routes import auth, admin, comments, cloudinary, image, qr_routes, users
+from front.pages import routes as router_pages
+from fastapi.staticfiles import StaticFiles
 
-from fastapi import FastAPI, HTTPException, Depends, status
-from sqlalchemy import text
-from sqlalchemy.orm import Session
+app = FastAPI(title="PyCraft FastAPI project")
 
-from src.database.db import get_db
-from src.routes import comments
-
-app = FastAPI()
-
-app.include_router(comments.router, prefix='/api')
-
-@app.get("/api/healthchecker")
-def healthchecker(db: Session = Depends(get_db)):
-    try:
-        result = db.execute(text("SELECT 1")).fetchone()
-        print(result)
-        if result is None:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                detail="Database is not configured correctly")
-        return {"message": "Welcome to FastAPI!"}
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Error connecting to the database")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, host='localhost', port=8000, reload=True)
+@app.on_event("startup")
+async def startup():
+	"""
+	The startup function is called when the application starts up.
+	It's a good place to initialize things that are used by the app, like databases or caches.
+
+	:return: A coroutine, so we need to call it with await
+
+	"""
+	await FastAPILimiter.init(
+		await redis.Redis(
+			host=settings.redis_host,
+			port=settings.redis_port,
+			password=settings.redis_password,
+			db=0,
+			encoding="utf-8",
+			decode_responses=True,
+		)
+	)
+
+
+app.include_router(auth.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
+app.include_router(users.router, prefix="/api")
+app.include_router(image.router, prefix="/api")
+app.include_router(comments.router, prefix="/api")
+app.include_router(cloudinary.router, prefix="/api")
+app.include_router(qr_routes.router, prefix='/api')
+app.include_router(router_pages.router)
+
+if __name__ == "__main__":
+	uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -2,50 +2,51 @@ from typing import List
 
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from src.database.models import User, Comment, Photo
+from src.database.models import User, Comment, Image
 
-from schemas import CommentModel
+from ..schemas.comments import CommentModel
 
-async def create_comment(photo_id: int, body: CommentModel, user: User, db: Session) -> Comment | None:
+
+async def create_comment(image_id: int, body: CommentModel, user: User, db: Session) -> Comment | None:
     """
-    Creates new comment for specific Photo by specific User.
+    Creates new comment for specific Image by specific User.
 
-    :param photo_id: ID of Photo for which comment will be added.
-    :type photo_id: int
+    :param image_id: ID of Image for which comment will be added.
+    :type image_id: int
     :param body: Data to create comment.
     :type body: CommentModel
     :param user: User by whose comment will be created.
     :type user: User
     :param db: Database session.
     :type db: Session
-    :return: Created comment or None if Photo does not exist.
+    :return: Created comment or None if Image does not exist.
     :rtype: Comment | None
     """
 
-    photo = db.query(Photo).filter(Photo.id == photo_id).first()
-    if photo:
+    image = db.query(Image).filter(Image.id == image_id).first()
+    if image:
         comment = Comment(body.model_dump())
         comment.user = user
-        comment.photo = photo
+        comment.image = image
         db.add(comment)
         db.commit()
         db.refresh(comment)
         return comment
 
 
-async def get_comments(photo_id: int, db: Session) -> List[Comment] | None:
+async def get_comments(image_id: int, db: Session) -> List[Comment] | None:
     """
-    Gets list of comments of specific Photo.
+    Gets list of comments of specific Image.
 
-    :param photo_id: ID of Photo from which comments will be gotten.
-    :type photo_id: int
+    :param image_id: ID of Image from which comments will be gotten.
+    :type image_id: int
     :param db: Database session.
     :type db: Session
-    :return: List of comments or None if Photo does not exist.
+    :return: List of comments or None if Image does not exist.
     :rtype: List[Comment] | None
     """
 
-    comments = db.query(Comment).filter(Comment.photo_id == photo_id).all()
+    comments = db.query(Comment).filter(Comment.image_id == image_id).all()
     return comments
 
 
