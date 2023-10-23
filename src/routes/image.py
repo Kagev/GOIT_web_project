@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, status, UploadFile, File, Form, HTTPException
-from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR, HTTP_404_NOT_FOUND
 from sqlalchemy.orm import Session
 from typing import List
-from src.database.models import Photo, Tag, User
-from src.schemas import ImageModel
+from src.database.models import User
+from src.schemas.image import ImageModel
 from src.database.db import get_db
 from src.repository import image as repository_image
 from src.services.auth import auth_service
