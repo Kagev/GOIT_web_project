@@ -3,7 +3,7 @@ import redis.asyncio as redis
 from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
 from config import settings
-from src.routes import auth, image, comments, cloudinary, qr_routes
+from src.routes import auth, admin, comments, cloudinary, image, qr_routes, users
 from front.pages import routes as router_pages
 from fastapi.staticfiles import StaticFiles
 
@@ -34,6 +34,8 @@ async def startup():
 
 
 app.include_router(auth.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
+app.include_router(users.router, prefix="/api")
 app.include_router(image.router, prefix="/api")
 app.include_router(comments.router, prefix="/api")
 app.include_router(cloudinary.router, prefix="/api")
