@@ -1,9 +1,8 @@
-import asyncio
-
 import httpx
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from src.database.db import engine, SessionLocal
+from sqlalchemy.orm import Session
+from src.database.connection import get_db
 from src.database.models import Comment, User, Image
 
 router = APIRouter(prefix="/pages", tags=["Pages"])
@@ -18,7 +17,7 @@ url_cloud = "https://pycrafters-project-pycrafters.koyeb.app"
 @router.get("/index")
 @router.get("/home")
 def get_base_pages(request: Request):
-	session = SessionLocal()
+	session: Session = get_db()
 	users = session.query(User).all()
 	images = session.query(Image).all()
 	comments = session.query(Comment).all()
@@ -62,7 +61,6 @@ async def login(username: str, password: str):
 			json={"username": username, "password": password},
 		)
 		return response.json()
-#
 #
 # @router.get("/logout")
 # async def logout():

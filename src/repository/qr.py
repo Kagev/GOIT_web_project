@@ -1,8 +1,8 @@
 from src.database.connection import get_db
-from src.schemas.qr_schemas import QRCodeSchema, QRImageSchema
+from src.schemas.qr import QRCodeSchema, QRImageSchema
 from datetime import datetime
 
-from src.services.qr_code import generate_qr_code
+from src.services.qr import generate_qr_code
 
 
 def save_qr_code_url(image_url: str, qr_code_url: str):

@@ -21,6 +21,9 @@ cloudinary = "^1.36.0"
 fastapi-mail = "^1.4.1"
 fastapi-limiter = "^0.1.5"
 redis = "^4.5.1"
+Pillow = "^10.1.0"
+segno = "^1.5.2"
+httpx = "^0.25.0"
 
 [tool.poetry.dev-dependencies]
 

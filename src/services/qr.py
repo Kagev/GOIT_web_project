@@ -4,13 +4,13 @@ import segno
 import cloudinary.uploader
 import cloudinary
 from config import settings
-from src.schemas.qr_schemas import QRImageSchema, QRCodeSchema
+from src.schemas.qr import QRCodeSchema
 from datetime import datetime
 from src.database.connection import get_db
 
 cloudinary.config(
 	cloud_name=settings.cloudinary_name,
-	api_key=settings.cloudinary_api,
+	api_key=settings.cloudinary_api_key,
 	api_secret=settings.cloudinary_api_secret,
 	secure=True,
 	cloud_folder=settings.cloudinary_folder,
