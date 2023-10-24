@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
 from fastapi_limiter.depends import RateLimiter
-from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from src.database.connection import get_db

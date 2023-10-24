@@ -48,7 +48,7 @@ class Image(Base, PrimaryKeyABC, CreatedAtABC):
 	__tablename__ = "images"
 
 	user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-	path = Column(String, nullable=False)
+	path = Column(String, nullable=True)
 	description = Column(String, nullable=True)
 
 	tags = relationship("Tag", secondary="image_tags", back_populates="images")
@@ -105,11 +105,3 @@ class CloudinaryResource(Base, PrimaryKeyABC, CreatedAtABC):
 	next_cursor = Column(String)
 	transformation = Column(String)
 	pages = Column(String)
-
-
-class QRImageResource(Base, PrimaryKeyABC, CreatedAtABC):
-	__tablename__ = "qr_image_resources"
-
-	img_transform_url = Column(String(255), nullable=False)
-	public_id = Column(String(255), nullable=False)
-	qr_code_url = Column(Text, nullable=False)

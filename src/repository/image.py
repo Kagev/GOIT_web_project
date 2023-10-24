@@ -23,7 +23,7 @@ async def create_image(
     - Images: An Images object representing the generated image.
     """
     # Creating an Image Object
-    image = Image(user_id, description=description)
+    image = Image(user_id=user_id, description=description)
     db.add(image)
     db.commit()
     db.refresh(image)

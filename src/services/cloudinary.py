@@ -15,9 +15,7 @@ cloudinary.config(
 )
 
 
-def upload_image(
-    file: BinaryIO, user_id: int, return_size: tuple[int, int] = (250, 250)
-) -> str:
+def upload_image(file: BinaryIO) -> str:
     """
     The upload_image function takes a file, uploads it to Cloudinary, and returns the URL of the uploaded image.
 
@@ -84,9 +82,6 @@ def optimize_media(public_id, quality=80):
         type="upload",
         eager=[
             {"quality": quality},
-
         ],
     )
     return optimize_img["secure_url"]
-
-
