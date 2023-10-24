@@ -25,6 +25,7 @@ async def startup():
         await redis.Redis(
             host=settings.redis_host,
             port=settings.redis_port,
+            username=settings.redis_username,
             password=settings.redis_password,
             db=0,
             encoding="utf-8",
