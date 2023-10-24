@@ -13,10 +13,11 @@ class UserDb(BaseModel):
     id: int
     username: str
     email: str
+    about: str
     created_at: datetime
-    is_admin: bool
-    is_moderator: bool
-    is_banned: bool
+    is_admin: bool = False
+    is_moderator: bool = False
+    is_banned: bool = False
 
     class Config:
         # orm_mode = True
@@ -37,8 +38,10 @@ class TokenModel(BaseModel):
 class UserProfileUpdate(BaseModel):
     username: str
     email: str
+    about: str
 
 
 class UserProfileResponse(BaseModel):
     username: str
     created_at: datetime
+    about: str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."

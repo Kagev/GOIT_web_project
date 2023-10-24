@@ -32,7 +32,7 @@ async def create_image(
 
     # Попытка создать изображение
     image = await repository_image.create_image(
-        file, description, tags, db, user_id=current_user.id
+        file, current_user.id, description, tags, db
     )
     return {
         "id": image.id,

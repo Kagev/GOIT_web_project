@@ -8,16 +8,14 @@ from config import settings
 
 cloudinary.config(
     cloud_name=settings.cloudinary_name,
-    api_key=settings.cloudinary_api,
+    api_key=settings.cloudinary_api_key,
     api_secret=settings.cloudinary_api_secret,
     secure=True,
     cloud_folder=settings.cloudinary_folder,
 )
 
 
-def upload_image(
-    file: BinaryIO, user_id: int, return_size: tuple[int, int] = (250, 250)
-) -> str:
+def upload_image(file: BinaryIO) -> str:
     """
     The upload_image function takes a file, uploads it to Cloudinary, and returns the URL of the uploaded image.
 
@@ -84,9 +82,6 @@ def optimize_media(public_id, quality=80):
         type="upload",
         eager=[
             {"quality": quality},
-
         ],
     )
     return optimize_img["secure_url"]
-
-

@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from config import settings
 
@@ -14,6 +14,8 @@ port = settings.postgres_port
 DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{domain}:{port}/{db_name}"
 
 engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_db():

@@ -31,7 +31,7 @@ async def get_user_profile(username: str, db: Session = Depends(get_db)):
 
 
 @router.patch(
-    "/my_info/{username}",
+    "/myinfo/{username}",
     response_model=UserProfileResponse,
     dependencies=[Depends(RateLimiter(times=2, seconds=1))],
 )

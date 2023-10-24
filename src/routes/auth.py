@@ -115,7 +115,7 @@ async def logout(access_token: str = Depends(auth_service.oauth2_scheme), db: Se
 	)
 
 
-@router.get("/refresh_token", response_model=TokenModel)
+@router.get("/refresh", response_model=TokenModel)
 async def refresh_token(
 		credentials: HTTPAuthorizationCredentials = Security(security),
 		db: Session = Depends(get_db),

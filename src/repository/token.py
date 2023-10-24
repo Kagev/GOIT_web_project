@@ -18,7 +18,7 @@ async def add_token_to_blacklist(email: str, token: str, db: Session) -> bool:
     :return: True if it successful.
     :doc-author: yarmel
     """
-    token_exists = await db.execute(select(TokenBL).filter(TokenBL.token == token)).scalar()
+    token_exists = db.execute(select(TokenBL).filter(TokenBL.token == token)).scalar()
     if token_exists:
         return False
 
