@@ -5,6 +5,8 @@ LABEL authors="PyCrafters"
 ENV APP_HOME /app
 ENV PORT 8000
 
+COPY .env .
+
 # set the working directory inside the container
 WORKDIR $APP_HOME
 
